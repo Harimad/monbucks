@@ -8,12 +8,26 @@
 // - [x] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
 // - [x] 사용자 입력값이 빈 값이라면 추가되지 않는다.
 
+// TODO 메뉴 수정
+// - [x] 메뉴의 수정 버튼을 눌러 메뉴 이름 수정할 수 있다.
+// - [x] 메뉴 수정시 브라우저에서 제공하는 prompt 인터페이스를 활용한다.
+
+// TODO 메뉴 삭제
+// - [x] 메뉴 삭제 버튼을 이용하여 메뉴 삭제할 수 있다.
+// - [x] 메뉴 삭제시 브라우저에서 제공하는 confirm 인터페이스를 활용한다.
+// - [x] 총 메뉴 갯수를 count하여 상단에 보여준다
 const $ = selector => document.querySelector(selector)
 
 function App() {
+  // TODO 메뉴 추가
   $('#espresso-menu-form').addEventListener('submit', e => {
     e.preventDefault()
   })
+  const countMenuList = () => {
+    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
+    $('.menu-count').innerText = `
+			총 ${menuCount}개`
+  }
   const addMenuName = () => {
     if ($('#espresso-menu-name').value === '') {
       alert('값을 입력해주세요')
@@ -42,16 +56,13 @@ function App() {
       'beforeend',
       menuItemTemplate(espressoMenuName)
     )
-    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
-    $('.menu-count').innerText = `
-			총 ${menuCount}개`
+    countMenuList()
     $('#espresso-menu-name').value = ''
   }
 
   $('#espresso-menu-submit-button').addEventListener('click', () => {
     addMenuName()
   })
-
   $('#espresso-menu-name').addEventListener('keydown', e => {
     if (e.key !== 'Enter') {
       return
@@ -59,20 +70,20 @@ function App() {
     addMenuName()
   })
   // TODO 메뉴 수정
-  // - [x] 메뉴의 수정 버튼을 눌러 메뉴 이름 수정할 수 있다.
-  // - [x] 메뉴 수정시 브라우저에서 제공하는 prompt 인터페이스를 활용한다.
   $('#espresso-menu-list').addEventListener('click', e => {
     if (e.target.classList.contains('menu-edit-button')) {
       const $menuName = e.target.closest('li').querySelector('.menu-name')
       const updatedMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText)
       $menuName.innerText = updatedMenuName
     }
+    // TODO 메뉴 삭제
+    if (e.target.classList.contains('menu-remove-button')) {
+      if (confirm('Do you really want to delete?')) {
+        e.target.closest('li').remove() // $('#espresso-menu-list').removeChild(e.target.closest('li'))
+        countMenuList()
+      }
+    }
   })
 }
 
 App()
-
-// TODO 메뉴 삭제
-// - [ ] 메뉴 삭제 버튼을 이용하여 메뉴 삭제할 수 있다.
-// - [ ] 메뉴 삭제시 브라우저에서 제공하는 confirm 인터페이스를 활용한다.
-// - [ ] 총 메뉴 갯수를 count하여 상단에 보여준다.
