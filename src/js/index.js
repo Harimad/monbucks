@@ -28,10 +28,9 @@ function App() {
       return
     }
 
-    if (e.key == 'Enter') {
-      const espressoMenuName = $('#espresso-menu-name').value
-      const menuItemTemplate = espressoMenuName => {
-        return `<li class="menu-list-item d-flex items-center py-2">
+    const espressoMenuName = $('#espresso-menu-name').value
+    const menuItemTemplate = espressoMenuName => {
+      return `<li class="menu-list-item d-flex items-center py-2">
 				<span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
 				<button
 					type="button"
@@ -47,18 +46,17 @@ function App() {
 				</button>
 			</li>
 				`
-      }
-      $('#espresso-menu-list').insertAdjacentHTML(
-        'beforeend',
-        menuItemTemplate(espressoMenuName)
-      )
+    }
+    $('#espresso-menu-list').insertAdjacentHTML(
+      'beforeend',
+      menuItemTemplate(espressoMenuName)
+    )
 
-      const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
-      $('.menu-count').innerText = `
+    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
+    $('.menu-count').innerText = `
 			총 ${menuCount}개`
 
-      $('#espresso-menu-name').value = ''
-    }
+    $('#espresso-menu-name').value = ''
   })
 }
 
