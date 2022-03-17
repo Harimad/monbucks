@@ -1,7 +1,7 @@
 // step1 요구사항 - 돔 조작과 이벤트 핸들링으로 메뉴 관리하기
 
 // TODO 메뉴 추가
-// - [ ] 에스프레소 메뉴에 새로운 메뉴를 확인 버튼을 누르면 메뉴가 추가된다.
+// - [x] 에스프레소 메뉴에 새로운 메뉴를 확인 버튼을 누르면 메뉴가 추가된다.
 // - [x] 에스프레소 메뉴에 새로운 메뉴를 엔터키 입력으로 메뉴가 추가된다.
 // - [x] 추가되는 메뉴의 아래 마크업은 <ul id="espresso-menu-list" class="mt-3 pl-0"></ul> 안에 삽입해야 한다.
 // - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
@@ -11,23 +11,14 @@
 const $ = selector => document.querySelector(selector)
 
 function App() {
-  // form 태그가 자동으로 전송되는걸 막아준다.
-
   $('#espresso-menu-form').addEventListener('submit', e => {
     e.preventDefault()
   })
-
-  // 메뉴의 이름을 입력받는건
-  $('#espresso-menu-name').addEventListener('keydown', e => {
-    if (e.key !== 'Enter') {
-      return
-    }
-
+  const addMenuName = () => {
     if ($('#espresso-menu-name').value === '') {
       alert('값을 입력해주세요')
       return
     }
-
     const espressoMenuName = $('#espresso-menu-name').value
     const menuItemTemplate = espressoMenuName => {
       return `<li class="menu-list-item d-flex items-center py-2">
@@ -51,12 +42,21 @@ function App() {
       'beforeend',
       menuItemTemplate(espressoMenuName)
     )
-
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
     $('.menu-count').innerText = `
 			총 ${menuCount}개`
-
     $('#espresso-menu-name').value = ''
+  }
+
+  $('#espresso-menu-submit-button').addEventListener('click', () => {
+    addMenuName()
+  })
+
+  $('#espresso-menu-name').addEventListener('keydown', e => {
+    if (e.key !== 'Enter') {
+      return
+    }
+    addMenuName()
   })
 }
 
