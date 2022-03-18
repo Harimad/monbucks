@@ -2,6 +2,10 @@
 
 // TODO localStorage Read & Write
 // [ ] localStorage에 데이터를 저장한다.
+//  - [x] 메뉴를 추가할 때
+//  - [] 메뉴를 수정할 때
+//  - [] 메뉴를 삭제할 때
+
 // [ ] localStorage에 있는 데이터를 읽어온다.
 
 // TODO 카테고리별 메뉴판 관리
@@ -41,8 +45,8 @@ function App() {
     $('.menu-count').innerText = `
 			총 ${menuCount}개`
   }
-  const menuItemTemplate = espressoMenuName => {
-    return `<li class="menu-list-item d-flex items-center py-2">
+  const menuItemTemplate = (espressoMenuName, index) => {
+    return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
 			<span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
 			<button
 				type="button"
@@ -69,7 +73,7 @@ function App() {
     store.setLocalStorage(this.menu)
 
     const template = this.menu
-      .map(item => menuItemTemplate(item.name)) //['<li>~</li>', '<li>~</li>', ...]
+      .map((item, index) => menuItemTemplate(item.name, index)) //['<li>~</li>', '<li>~</li>', ...]
       .join('') //[<li>~</li><li>~</li><li>~</li>]
 
     $('#espresso-menu-list').innerHTML = template
@@ -78,8 +82,11 @@ function App() {
   }
   const updateMenuName = e => {
     if (e.target.classList.contains('menu-edit-button')) {
+      const menuId = e.target.closest('li').dataset.menuId
       const $menuName = e.target.closest('li').querySelector('.menu-name')
       const updatedMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText)
+      this.menu[menuId].name = updatedMenuName
+      store.setLocalStorage(this.menu)
       $menuName.innerText = updatedMenuName
     }
   }
