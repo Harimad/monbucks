@@ -23,7 +23,18 @@
 
 const $ = selector => document.querySelector(selector)
 
+const store = {
+  setLocalStorage(menu) {
+    localStorage.setItem('menu', JSON.stringify(menu))
+  },
+  getLocalStorage() {
+    localStorage.getItem('menu')
+  },
+}
+
 function App() {
+  //상태(변하는 데이터, 이 앱에서 변하는 것이 무엇인가) - 메뉴명
+
   const countMenuName = () => {
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
     $('.menu-count').innerText = `
