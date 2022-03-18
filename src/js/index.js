@@ -34,6 +34,7 @@ const store = {
 
 function App() {
   //상태(변하는 데이터, 이 앱에서 변하는 것이 무엇인가) - 메뉴명
+  this.menu = []
 
   const countMenuName = () => {
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
@@ -64,11 +65,14 @@ function App() {
       return
     }
     const espressoMenuName = $('#espresso-menu-name').value
+    this.menu.push({ name: espressoMenuName })
+    store.setLocalStorage(this.menu)
 
-    $('#espresso-menu-list').insertAdjacentHTML(
-      'beforeend',
-      menuItemTemplate(espressoMenuName)
-    )
+    const template = this.menu
+      .map(item => menuItemTemplate(item.name)) //['<li>~</li>', '<li>~</li>', ...]
+      .join('') //[<li>~</li><li>~</li><li>~</li>]
+
+    $('#espresso-menu-list').innerHTML = template
     countMenuName()
     $('#espresso-menu-name').value = ''
   }
@@ -100,5 +104,5 @@ function App() {
     removeMenuNme(e)
   })
 }
-
-App()
+// App()
+const app = new App()
