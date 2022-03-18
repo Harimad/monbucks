@@ -93,6 +93,9 @@ function App() {
   const removeMenuNme = e => {
     if (e.target.classList.contains('menu-remove-button')) {
       if (confirm('Do you really want to delete?')) {
+        const menuId = e.target.closest('li').dataset.menuId
+        this.menu.splice(menuId, 1)
+        store.setLocalStorage(this.menu)
         e.target.closest('li').remove() // $('#espresso-menu-list').removeChild(e.target.closest('li'))
         countMenuName()
       }
