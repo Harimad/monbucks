@@ -10,14 +10,14 @@
 
 // TODO 카테고리별 메뉴판 관리
 // [x] 에스프레소 메뉴판 관리
-// [ ] 프라푸치노 메뉴판 관리
-// [ ] 블렌디드 메뉴판 관리
-// [ ] 티바나 메뉴판 관리
-// [ ] 디저트 메뉴판 관리
+// [x] 프라푸치노 메뉴판 관리
+// [x] 블렌디드 메뉴판 관리
+// [x] 티바나 메뉴판 관리
+// [x] 디저트 메뉴판 관리
 
 // TODO 페이지 접근시 최초 데티어 Read & Rendering
-// [ ] 페이지를 최초로 접근할 때는 localStorage에 에스프레스 파일을 읽어온다.
-// [ ] 에스프레소 메뉴를 페이지에 그려준다.
+// [x] 페이지를 최초로 접근할 때는 localStorage에 에스프레스 파일을 읽어온다.
+// [x] 에스프레소 메뉴를 페이지에 그려준다.
 
 // TODO 품절 상태 관리
 // [ ] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 sold-out class를 추가하여 상태를 변경한다.
@@ -42,7 +42,7 @@ function App() {
     frappuccino: [],
     blended: [],
     teavana: [],
-    dessert: [],
+    desert: [],
   }
   this.currentCategory = 'espresso'
   this.init = () => {
@@ -53,7 +53,7 @@ function App() {
   }
 
   const countMenuName = () => {
-    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
+    const menuCount = $('#menu-list').querySelectorAll('li').length
     $('.menu-count').innerText = `
 			총 ${menuCount}개`
   }
@@ -81,21 +81,21 @@ function App() {
       })
       .join('')
 
-    $('#espresso-menu-list').innerHTML = template
+    $('#menu-list').innerHTML = template
     countMenuName()
   }
 
   const addMenuName = () => {
-    if ($('#espresso-menu-name').value === '') {
+    if ($('#menu-name').value === '') {
       alert('값을 입력해주세요')
       return
     }
-    const espressoMenuName = $('#espresso-menu-name').value
-    this.menu[this.currentCategory].push({ name: espressoMenuName })
+    const menuName = $('#menu-name').value
+    this.menu[this.currentCategory].push({ name: menuName })
     store.setLocalStorage(this.menu)
 
     render()
-    $('#espresso-menu-name').value = ''
+    $('#menu-name').value = ''
   }
   const updateMenuName = e => {
     if (e.target.classList.contains('menu-edit-button')) {
@@ -118,15 +118,15 @@ function App() {
       }
     }
   }
-  $('#espresso-menu-form').addEventListener('submit', e => {
+  $('#menu-form').addEventListener('submit', e => {
     e.preventDefault()
   })
-  $('#espresso-menu-submit-button').addEventListener('click', addMenuName)
-  $('#espresso-menu-name').addEventListener('keydown', e => {
+  $('#menu-submit-button').addEventListener('click', addMenuName)
+  $('#menu-name').addEventListener('keydown', e => {
     if (e.key !== 'Enter') return
     addMenuName()
   })
-  $('#espresso-menu-list').addEventListener('click', e => {
+  $('#menu-list').addEventListener('click', e => {
     updateMenuName(e)
     removeMenuName(e)
   })
@@ -134,7 +134,9 @@ function App() {
     const isCategoryButton = e.target.classList.contains('cafe-category-name')
     if (isCategoryButton) {
       const categoryName = e.target.dataset.categoryName
-      console.log(categoryName)
+      this.currentCategory = categoryName
+      $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`
+      render()
     }
   })
 }
