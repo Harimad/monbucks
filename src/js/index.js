@@ -6,10 +6,10 @@
 //  - [x] 메뉴를 수정할 때
 //  - [x] 메뉴를 삭제할 때
 
-// [ ] localStorage에 있는 데이터를 읽어온다.
+// [x] localStorage에 있는 데이터를 읽어온다.
 
 // TODO 카테고리별 메뉴판 관리
-// [ ] 에스프레소 메뉴판 관리
+// [x] 에스프레소 메뉴판 관리
 // [ ] 프라푸치노 메뉴판 관리
 // [ ] 블렌디드 메뉴판 관리
 // [ ] 티바나 메뉴판 관리
@@ -37,9 +37,16 @@ const store = {
 }
 
 function App() {
-  this.menu = []
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    dessert: [],
+  }
+  this.currentCategory = 'espresso'
   this.init = () => {
-    if (store.getLocalStorage().length > 0) {
+    if (store.getLocalStorage()) {
       this.menu = store.getLocalStorage()
     }
     render()
@@ -52,7 +59,7 @@ function App() {
   }
 
   const render = () => {
-    const template = this.menu
+    const template = this.menu[this.currentCategory]
       .map((menuItem, index) => {
         return `
 			<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
@@ -84,7 +91,7 @@ function App() {
       return
     }
     const espressoMenuName = $('#espresso-menu-name').value
-    this.menu.push({ name: espressoMenuName })
+    this.menu[this.currentCategory].push({ name: espressoMenuName })
     store.setLocalStorage(this.menu)
 
     render()
@@ -95,7 +102,7 @@ function App() {
       const menuId = e.target.closest('li').dataset.menuId
       const $menuName = e.target.closest('li').querySelector('.menu-name')
       const updatedMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText)
-      this.menu[menuId].name = updatedMenuName
+      this.menu[this.currentCategory][menuId].name = updatedMenuName
       store.setLocalStorage(this.menu)
       $menuName.innerText = updatedMenuName
     }
@@ -104,7 +111,7 @@ function App() {
     if (e.target.classList.contains('menu-remove-button')) {
       if (confirm('Do you really want to delete?')) {
         const menuId = e.target.closest('li').dataset.menuId
-        this.menu.splice(menuId, 1)
+        this.menu[this.currentCategory].splice(menuId, 1)
         store.setLocalStorage(this.menu)
         e.target.closest('li').remove()
         countMenuName()
@@ -122,6 +129,13 @@ function App() {
   $('#espresso-menu-list').addEventListener('click', e => {
     updateMenuName(e)
     removeMenuName(e)
+  })
+  $('nav').addEventListener('click', e => {
+    const isCategoryButton = e.target.classList.contains('cafe-category-name')
+    if (isCategoryButton) {
+      const categoryName = e.target.dataset.categoryName
+      console.log(categoryName)
+    }
   })
 }
 
