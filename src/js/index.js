@@ -62,8 +62,16 @@ function App() {
     const template = this.menu[this.currentCategory]
       .map((menuItem, index) => {
         return `
-			<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
-			<span class="w-100 pl-2 menu-name">${menuItem.name}</span>
+			<li data-menu-id="${index}" class=" menu-list-item d-flex items-center py-2">
+			<span class="w-100 pl-2 menu-name ${menuItem.soldOut ? 'sold-out' : ''}">${
+          menuItem.name
+        }</span>
+      <button
+      type="button"
+      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+      >
+      품절
+      </button>
 			<button
 				type="button"
 				class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -98,25 +106,28 @@ function App() {
     $('#menu-name').value = ''
   }
   const updateMenuName = e => {
-    if (e.target.classList.contains('menu-edit-button')) {
-      const menuId = e.target.closest('li').dataset.menuId
-      const $menuName = e.target.closest('li').querySelector('.menu-name')
-      const updatedMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText)
-      this.menu[this.currentCategory][menuId].name = updatedMenuName
-      store.setLocalStorage(this.menu)
-      $menuName.innerText = updatedMenuName
-    }
+    const menuId = e.target.closest('li').dataset.menuId
+    const $menuName = e.target.closest('li').querySelector('.menu-name')
+    const updatedMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText)
+    this.menu[this.currentCategory][menuId].name = updatedMenuName
+    store.setLocalStorage(this.menu)
+    $menuName.innerText = updatedMenuName
   }
   const removeMenuName = e => {
-    if (e.target.classList.contains('menu-remove-button')) {
-      if (confirm('Do you really want to delete?')) {
-        const menuId = e.target.closest('li').dataset.menuId
-        this.menu[this.currentCategory].splice(menuId, 1)
-        store.setLocalStorage(this.menu)
-        e.target.closest('li').remove()
-        countMenuName()
-      }
+    if (confirm('Do you really want to delete?')) {
+      const menuId = e.target.closest('li').dataset.menuId
+      this.menu[this.currentCategory].splice(menuId, 1)
+      store.setLocalStorage(this.menu)
+      e.target.closest('li').remove()
+      countMenuName()
     }
+  }
+  const soldOutMenuName = e => {
+    const menuId = e.target.closest('li').dataset.menuId
+    this.menu[this.currentCategory][menuId].soldOut =
+      !this.menu[this.currentCategory][menuId].soldOut
+    store.setLocalStorage(this.menu)
+    render()
   }
   $('#menu-form').addEventListener('submit', e => {
     e.preventDefault()
@@ -127,8 +138,18 @@ function App() {
     addMenuName()
   })
   $('#menu-list').addEventListener('click', e => {
-    updateMenuName(e)
-    removeMenuName(e)
+    if (e.target.classList.contains('menu-edit-button')) {
+      updateMenuName(e)
+      return
+    }
+    if (e.target.classList.contains('menu-remove-button')) {
+      removeMenuName(e)
+      return
+    }
+    if (e.target.classList.contains('menu-sold-out-button')) {
+      soldOutMenuName(e)
+      return
+    }
   })
   $('nav').addEventListener('click', e => {
     const isCategoryButton = e.target.classList.contains('cafe-category-name')
