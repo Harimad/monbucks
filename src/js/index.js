@@ -20,6 +20,13 @@ import store from './store/index.js'
 
 const BASE_URL = 'http://localhost:3000/api'
 
+const MenuApi = {
+  async getAllMenuByCategory(category) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`)
+    return response.json()
+  },
+}
+
 function App() {
   this.menu = {
     espresso: [],
@@ -30,10 +37,10 @@ function App() {
   }
   this.currentCategory = 'espresso'
 
-  this.init = () => {
-    if (store.getLocalStorage()) {
-      this.menu = store.getLocalStorage()
-    }
+  this.init = async () => {
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    )
     render()
     initEventListeners()
   }
@@ -95,15 +102,11 @@ function App() {
       return response.json()
     })
 
-    await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`)
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        this.menu[this.currentCategory] = data
-        render()
-        $('#menu-name').value = ''
-      })
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    )
+    render()
+    $('#menu-name').value = ''
   }
   const updateMenuName = e => {
     const menuId = e.target.closest('li').dataset.menuId
